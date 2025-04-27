@@ -1,0 +1,184 @@
+SnapLayer.elements = [];
+
+SnapLayer.prototype._createButton = function (
+  html,
+  classNames = 'snaplayer__btn',
+  callback
+) {
+  const button = document.createElement('button');
+  button.innerHTML = html;
+  if (typeof classNames == 'string') button.className = classNames;
+  if (typeof callback === 'function') button.onclick = callback;
+  return button;
+};
+SnapLayer.prototype._getScrollbarWidth = function () {
+  if (this._scrollbarWidth) return this._scrollbarWidth;
+
+  const div = document.createElement('div');
+  Object.assign(div.style, {
+    overflow: 'scroll',
+    position: 'absolute',
+    top: '-99999px'
+  });
+
+  document.body.appendChild(div);
+
+  this._scrollbarWidth = div.offsetWidth - div.clientWidth;
+
+  document.body.removeChild(div);
+
+  return this._scrollbarWidth;
+};
+
+SnapLayer.prototype._onTransitionEnd = function (callback) {
+  this._backdrop.ontransitionend = (e) => {
+    if (e.propertyName !== 'transform') return;
+    if (typeof callback === 'function') callback();
+  };
+};
+
+SnapLayer.prototype._handleEscapeKey = function (e) {
+  const isLastModal =
+    this === SnapLayer.elements[SnapLayer.elements.length - 1];
+  if (e.key === 'Escape' && isLastModal) {
+    this.close();
+  }
+};
+
+SnapLayer.prototype.setFooterContent = function (html) {
+  this._footerContent = html;
+  this._renderFooterContent();
+};
+
+SnapLayer.prototype._renderFooterContent = function () {
+  if (this._footer && this._footerContent)
+    this._footer.innerHTML = this._footerContent;
+};
+
+SnapLayer.prototype._renderFooterButtons = function () {
+  if (this._footer)
+    this._footerButtons.forEach((button) => this._footer.append(button));
+};
+
+SnapLayer.prototype.destroy = function () {
+  this.close(true);
+};
+
+SnapLayer.prototype.addFooterButton = function (html, classNames, callback) {
+  const button = this._createButton(html, classNames, callback);
+  this._footerButtons.push(button);
+  this._renderFooterButtons();
+};
+
+SnapLayer.prototype._build = function () {
+  const content = this._template.content.cloneNode(true);
+
+  this._backdrop = document.createElement('div');
+  this._backdrop.className = 'snaplayer__backdrop';
+
+  const container = document.createElement('div');
+  container.className = 'snaplayer__container';
+  this._otp.cssClasses.forEach((className) => {
+    if (typeof className === 'string') container.classList.add(className);
+  });
+
+  if (this._allowButtonClose) {
+    const closeBtn = this._createButton('&times;', 'snaplayer__close', () =>
+      this.close()
+    );
+    container.append(closeBtn);
+  }
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'snaplayer__content';
+
+  // Append html
+  modalContent.append(content);
+  container.append(modalContent);
+
+  if (this._otp.footer) {
+    this._footer = document.createElement('footer');
+    this._footer.className = 'snaplayer__footer';
+
+    this._renderFooterContent();
+    this._renderFooterButtons();
+
+    container.append(this._footer);
+  }
+
+  this._backdrop.append(container);
+  document.body.append(this._backdrop);
+};
+
+SnapLayer.prototype.open = function () {
+  SnapLayer.elements.push(this);
+
+  if (!this._backdrop) {
+    this._build();
+  }
+
+  setTimeout(() => this._backdrop.classList.add('snaplayer--show'), 0);
+
+  this._onTransitionEnd(this._otp.onOpen);
+
+  if (this._allowBackdropClose) {
+    this._backdrop.onclick = (e) => {
+      if (e.target === this._backdrop) this.close();
+    };
+  }
+
+  if (this._allowEscapeClose)
+    window.addEventListener('keydown', this._handleEscapeKey);
+
+  // Disable scroll
+  document.body.classList.add('snaplayer--no-scroll');
+  document.body.style.paddingRight = this._getScrollbarWidth() + 'px';
+
+  return this._backdrop;
+};
+
+SnapLayer.prototype.close = function (isDestroy = this._otp.destroyOnClose) {
+  SnapLayer.elements.pop();
+  this._backdrop.classList.remove('snaplayer--show');
+
+  this._onTransitionEnd(() => {
+    if (isDestroy) {
+      this._backdrop.remove();
+      this._backdrop = null;
+      this._footer = null;
+    }
+
+    // Enable scroll
+    if (!SnapLayer.elements.length) {
+      document.body.classList.remove('snaplayer--no-scroll');
+      document.body.style.paddingRight = '';
+    }
+
+    if (typeof this._otp.onClose === 'function') this._otp.onClose();
+  });
+
+  if (this._allowEscapeClose) {
+    window.removeEventListener('keydown', this._handleEscapeKey);
+  }
+};
+
+function SnapLayer(options = {}) {
+  this._otp = Object.assign(
+    {
+      closeMethods: ['button', 'overlay', 'escape'],
+      cssClasses: [],
+      destroyOnClose: true,
+      footer: false
+    },
+    options
+  );
+  this._template = document.querySelector(`#${this._otp.templateId}`);
+  if (!this._template)
+    return console.error(`${this._otp.templateId} does not exist`);
+
+  this._allowBackdropClose = this._otp.closeMethods.includes('overlay');
+  this._allowButtonClose = this._otp.closeMethods.includes('button');
+  this._allowEscapeClose = this._otp.closeMethods.includes('escape');
+  this._footerButtons = [];
+  this._handleEscapeKey = this._handleEscapeKey.bind(this);
+}

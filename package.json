@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "minify": "terser snaplayer.js -o snaplayer.min.js && csso snaplayer.css -o snaplayer.min.css"
+  },
+  "dependencies": {
+    "csso-cli": "^4.0.2",
+    "terser": "^5.39.0"
+  }
+}
