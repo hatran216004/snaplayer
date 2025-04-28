@@ -3,6 +3,17 @@
   border-radius: 8px;
   padding: 8px 20px;
   font-weight: 600;
+  cursor: pointer;
+}
+
+.snaplayer__btn:hover {
+  opacity: 0.9;
+}
+
+.snaplayer__btn.primary {
+  color: #fff;
+  background: var(--primary);
+  border-color: transparent;
 }
 
 .snaplayer {
@@ -28,7 +39,7 @@
 }
 
 .snaplayer__container {
-  padding: 20px 30px;
+  padding: 20px;
   width: min(600px, 90%);
   position: relative;
   background: #fff;

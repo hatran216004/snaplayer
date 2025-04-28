@@ -102,9 +102,10 @@ SnapLayer.prototype._build = function () {
 
   const container = document.createElement('div');
   container.className = 'snaplayer__container';
-  this._otp.cssClasses.forEach((className) => {
-    if (typeof className === 'string') container.classList.add(className);
-  });
+  this._otp.cssClasses.forEach(
+    (className) =>
+      typeof className === 'string' && container.classList.add(className)
+  );
 
   if (this._allowButtonClose) {
     const closeBtn = this._createButton('&times;', 'snaplayer__close', () =>
@@ -159,7 +160,7 @@ SnapLayer.prototype.open = function () {
     const target = this._otp.scrollLockTarget();
     const targetPaddingRight = parseInt(getComputedStyle(target).paddingRight);
 
-    if (this._hasScrollbar(target)) {
+    if (this._hasScrollbar(target) && this === SnapLayer.elements[0]) {
       target.classList.add('snaplayer--no-scroll');
       target.style.paddingRight =
         targetPaddingRight + this._getScrollbarWidth() + 'px';

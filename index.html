@@ -22,7 +22,7 @@
           A lightweight and simple modal library built with pure JavaScript.
         </div>
         <a
-          href="https://github.com/sondnpt00343/Snaplayer"
+          href="https://github.com/hatran216004/snaplayer"
           class="header__github"
           target="_blank"
           ><img src="./assets/github.svg" alt="View on GitHub"
@@ -109,13 +109,13 @@
 
       <pre
         class="html"
-      ><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/hatran216004/snaplayer@v1.0.1/snaplayer.min.js&quot;&gt;&lt;/script&gt;</code></pre>
+      ><code>&lt;script src=&quot;https://cdn.jsdelivr.net/gh/hatran216004/snaplayer@v1.0.0/snaplayer.min.js&quot;&gt;&lt;/script&gt;</code></pre>
 
       <p>Optionally, include the Snaplayer CSS file for default styling:</p>
 
       <pre class="html"><code>&lt;link
       rel=&quot;stylesheet&quot;
-      href=&quot;https://cdn.jsdelivr.net/gh/hatran216004/snaplayer@v1.0.1/snaplayer.min.css&quot;
+      href=&quot;https://cdn.jsdelivr.net/gh/hatran216004/snaplayer@v1.0.0/snaplayer.min.css&quot;
   &gt;</code></pre>
 
       <p>
@@ -425,125 +425,128 @@
     <script src="./assets/highlight/highlight.js"></script>
     <script src="./src/snaplayer.js"></script>
     <script>
-      //   Highlight code
+      // Highlight code
       hljs.initHighlightingOnLoad();
 
-      //   Modal samples
+      // Modal samples
       // Basic Modal
       const modal1Btn = document.querySelector('.js-snaplayer-modal-1');
       const modal1 = new SnapLayer({
-        enableScrollLock: false,
         footer: true,
         content: `
                         <h1>Basic Modal</h1>
                         <p>This is a simple modal. You can customize its content as per your requirements.</p>
                     `
       });
-      // modal1.setContent('<h1>test setContent</h1>');
-      modal1.addFooterButton('Click me', '', (e) => {});
+
+      modal1.addFooterButton('Close all', 'btn', (e) => {
+        modal1.close();
+        modal6.close();
+      });
+
       modal1Btn.onclick = () => {
         modal1.open();
       };
 
       // Modal with Buttons
-      // const modal2Btn = document.querySelector('.js-snaplayer-modal-2');
-      // const modal2 = new SnapLayer({
-      //   content: `
-      //                   <h1>Modal with Buttons</h1>
-      //                   <p>This modal includes functional buttons for actions such as canceling or confirming.</p>
-      //               `,
-      //   footer: true
-      // });
-      // modal2.addFooterButton('Cancel', 'modal-btn', () => {
-      //   modal2.close();
-      // });
-      // modal2.addFooterButton('Confirm', 'modal-btn primary', () => {
-      //   console.log('Action confirmed!');
-      //   modal2.close();
-      // });
-      // modal2Btn.onclick = () => {
-      //   modal2.open();
-      // };
+      const modal2Btn = document.querySelector('.js-snaplayer-modal-2');
+      const modal2 = new SnapLayer({
+        content: `
+                        <h1>Modal with Buttons</h1>
+                        <p>This modal includes functional buttons for actions such as canceling or confirming.</p>
+                    `,
+        footer: true
+      });
+      modal2.addFooterButton('Cancel', 'btn', () => {
+        modal2.close();
+      });
+      modal2.addFooterButton('Confirm', 'btn primary', () => {
+        console.log('Action confirmed!');
+        modal2.close();
+      });
+      modal2Btn.onclick = () => {
+        modal2.open();
+      };
 
-      // // Large Content Modal
-      // const modal3Btn = document.querySelector('.js-snaplayer-modal-3');
-      // const modal3 = new SnapLayer({
-      //   // content: `
-      //   //                 <h1>Large Content Modal</h1>
-      //   //                 <p>This modal contains a large amount of content, suitable for displaying extended text or information.</p>
-      //   //                 <p>Please scroll down to view the entire content.</p>
-      //   //                 <p>The content can include multiple paragraphs, images, or other detailed information.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //                 <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
-      //   //             `
-      // });
-      // modal3Btn.onclick = () => {
-      //   modal3.open();
-      // };
+      // Large Content Modal
+      const modal3Btn = document.querySelector('.js-snaplayer-modal-3');
+      const modal3 = new SnapLayer({
+        content: `
+                        <h1>Large Content Modal</h1>
+                        <p>This modal contains a large amount of content, suitable for displaying extended text or information.</p>
+                        <p>Please scroll down to view the entire content.</p>
+                        <p>The content can include multiple paragraphs, images, or other detailed information.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nihil cumque adipisci mollitia voluptatibus explicabo non perspiciatis eaque sed qui. Est.</p>
+                    `
+      });
+      modal3Btn.onclick = () => {
+        modal3.open();
+      };
 
-      // // Footer-Only Close Modal
-      // const modal4Btn = document.querySelector('.js-snaplayer-modal-4');
-      // const modal4 = new SnapLayer({
-      //   // content: `
-      //   //                 <h1>Footer-Only Close Modal</h1>
-      //   //                 <p>This modal can only be closed via the button in the footer for a controlled experience.</p>
-      //   //             `,
-      //   // footer: true,
-      //   closeMethods: []
-      // });
-      // modal4.addFooterButton('Close', 'modal-btn', () => {
-      //   modal4.close();
-      // });
-      // modal4Btn.onclick = () => {
-      //   modal4.open();
-      // };
+      // Footer-Only Close Modal
+      const modal4Btn = document.querySelector('.js-snaplayer-modal-4');
+      const modal4 = new SnapLayer({
+        content: `
+                        <h1>Footer-Only Close Modal</h1>
+                        <p>This modal can only be closed via the button in the footer for a controlled experience.</p>
+                    `,
+        footer: true,
+        closeMethods: []
+      });
+      modal4.addFooterButton('Close', 'btn', () => {
+        modal4.close();
+      });
+      modal4Btn.onclick = () => {
+        modal4.open();
+      };
 
-      // // Persistent Modal
-      // const modal5Btn = document.querySelector('.js-snaplayer-modal-5');
-      // const modal5 = new SnapLayer({
-      //   // content: `
-      //   //                 <h1>Persistent Modal</h1>
-      //   //                 <p>This modal stays in the DOM even after being closed, allowing you to reopen it without losing any changes.</p>
-      //   //                 <p>You can write something in the input below, close the modal, and reopen it to see the content still intact.</p>
-      //   //                 <input type="text" placeholder="Type something here..." class="modal-input" style="width: 100%; padding: 10px; margin-top: 10px;" />
-      //   //             `,
-      //   destroyOnClose: false
-      // });
-      // modal5Btn.onclick = () => {
-      //   modal5.open();
-      // };
+      // Persistent Modal
+      const modal5Btn = document.querySelector('.js-snaplayer-modal-5');
+      const modal5 = new SnapLayer({
+        content: `
+                        <h1>Persistent Modal</h1>
+                        <p>This modal stays in the DOM even after being closed, allowing you to reopen it without losing any changes.</p>
+                        <p>You can write something in the input below, close the modal, and reopen it to see the content still intact.</p>
+                        <input type="text" placeholder="Type something here..." class="modal-input" style="width: 100%; padding: 10px; margin-top: 10px;" />
+                    `,
+        destroyOnClose: false
+      });
+      modal5Btn.onclick = () => {
+        modal5.open();
+      };
 
-      // // Multiple Modals
-      // const modal6Btn = document.querySelector('.js-snaplayer-modal-6');
-      // const modal6 = new SnapLayer({
-      //   // content: `
-      //   //                 <h1>Multiple Modals</h1>
-      //   //                 <p>This modal demonstrates interaction between multiple modals. You can open another modal from here.</p>
-      //   //                 <button class="btn" onclick="modal1.open();">Open Basic Modal</button>
-      //   //             `
-      // });
-      // modal6Btn.onclick = () => {
-      //   modal6.open();
-      // };
+      // Multiple Modals
+      const modal6Btn = document.querySelector('.js-snaplayer-modal-6');
+      const modal6 = new SnapLayer({
+        content: `
+                        <h1>Multiple Modals</h1>
+                        <p>This modal demonstrates interaction between multiple modals. You can open another modal from here.</p>
+                        <button class="btn" onclick="modal1.open();">Open Basic Modal</button>
+                    `
+      });
+      modal6Btn.onclick = () => {
+        modal6.open();
+      };
 
-      // // Youtube Embed Modal
-      // const modal7Btn = document.querySelector('.js-snaplayer-modal-7');
-      // const modal7 = new SnapLayer({
-      //   // content: `<iframe width="560" height="315" src="https://www.youtube.com/embed/RDfwGkasp58?si=g8qSqHld--Uimjme" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
-      // });
-      // modal7Btn.onclick = () => {
-      //   modal7.open();
-      // };
+      // Youtube Embed Modal
+      const modal7Btn = document.querySelector('.js-snaplayer-modal-7');
+      const modal7 = new SnapLayer({
+        content: `<iframe width="560" height="315" src="https://www.youtube.com/embed/RDfwGkasp58?si=g8qSqHld--Uimjme" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`
+      });
+      modal7Btn.onclick = () => {
+        modal7.open();
+      };
     </script>
   </body>
 </html>
