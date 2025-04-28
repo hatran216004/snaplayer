@@ -11,6 +11,19 @@ SnapLayer.prototype._createButton = function (
   if (typeof callback === 'function') button.onclick = callback;
   return button;
 };
+
+SnapLayer.prototype._hasScrollbar = function (target) {
+  if ([document.body, document.documentElement].includes(target)) {
+    return (
+      document.body.scrollHeight > document.body.clientHeight ||
+      document.documentElement.scrollHeight >
+        document.documentElement.clientHeight
+    );
+  }
+
+  return target.scrollHeight > target.clientHeight;
+};
+
 SnapLayer.prototype._getScrollbarWidth = function () {
   if (this._scrollbarWidth) return this._scrollbarWidth;
 
@@ -45,6 +58,13 @@ SnapLayer.prototype._handleEscapeKey = function (e) {
   }
 };
 
+SnapLayer.prototype.setContent = function (html) {
+  this.content = html;
+  if (this._modalContent) {
+    this._modalContent.innerHTML = this.content;
+  }
+};
+
 SnapLayer.prototype.setFooterContent = function (html) {
   this._footerContent = html;
   this._renderFooterContent();
@@ -71,10 +91,14 @@ SnapLayer.prototype.addFooterButton = function (html, classNames, callback) {
 };
 
 SnapLayer.prototype._build = function () {
-  const content = this._template.content.cloneNode(true);
+  const contentNode = this.content
+    ? document.createElement('div')
+    : this._template.content.cloneNode(true);
+
+  if (this.content) contentNode.innerHTML = this.content;
 
   this._backdrop = document.createElement('div');
-  this._backdrop.className = 'snaplayer__backdrop';
+  this._backdrop.className = 'snaplayer';
 
   const container = document.createElement('div');
   container.className = 'snaplayer__container';
@@ -89,12 +113,12 @@ SnapLayer.prototype._build = function () {
     container.append(closeBtn);
   }
 
-  const modalContent = document.createElement('div');
-  modalContent.className = 'snaplayer__content';
+  this._modalContent = document.createElement('div');
+  this._modalContent.className = 'snaplayer__content';
 
   // Append html
-  modalContent.append(content);
-  container.append(modalContent);
+  this._modalContent.append(contentNode);
+  container.append(this._modalContent);
 
   if (this._otp.footer) {
     this._footer = document.createElement('footer');
@@ -131,8 +155,16 @@ SnapLayer.prototype.open = function () {
     window.addEventListener('keydown', this._handleEscapeKey);
 
   // Disable scroll
-  document.body.classList.add('snaplayer--no-scroll');
-  document.body.style.paddingRight = this._getScrollbarWidth() + 'px';
+  if (this._otp.enableScrollLock) {
+    const target = this._otp.scrollLockTarget();
+    const targetPaddingRight = parseInt(getComputedStyle(target).paddingRight);
+
+    if (this._hasScrollbar(target)) {
+      target.classList.add('snaplayer--no-scroll');
+      target.style.paddingRight =
+        targetPaddingRight + this._getScrollbarWidth() + 'px';
+    }
+  }
 
   return this._backdrop;
 };
@@ -149,9 +181,13 @@ SnapLayer.prototype.close = function (isDestroy = this._otp.destroyOnClose) {
     }
 
     // Enable scroll
-    if (!SnapLayer.elements.length) {
-      document.body.classList.remove('snaplayer--no-scroll');
-      document.body.style.paddingRight = '';
+    if (!SnapLayer.elements.length && this._otp.enableScrollLock) {
+      const target = this._otp.scrollLockTarget();
+
+      if (this._hasScrollbar(target)) {
+        target.classList.remove('snaplayer--no-scroll');
+        target.style.paddingRight = '';
+      }
     }
 
     if (typeof this._otp.onClose === 'function') this._otp.onClose();
@@ -163,19 +199,35 @@ SnapLayer.prototype.close = function (isDestroy = this._otp.destroyOnClose) {
 };
 
 function SnapLayer(options = {}) {
+  let { templateId, content } = options;
+  if (!templateId && !content) {
+    return console.error(`Please provide 'templateId' or 'content'`);
+  }
+  if (templateId && content) {
+    templateId = null;
+    console.warn(
+      `'templateId' will be ignore if provide 'templateId' and 'content'`
+    );
+  }
+
+  if (templateId) {
+    this._template = document.querySelector(`#${templateId}`);
+    if (!this._template) return console.error(`${templateId} does not exist`);
+  }
+
   this._otp = Object.assign(
     {
       closeMethods: ['button', 'overlay', 'escape'],
       cssClasses: [],
       destroyOnClose: true,
-      footer: false
+      footer: false,
+      enableScrollLock: true,
+      scrollLockTarget: () => document.body
     },
     options
   );
-  this._template = document.querySelector(`#${this._otp.templateId}`);
-  if (!this._template)
-    return console.error(`${this._otp.templateId} does not exist`);
 
+  this.content = content;
   this._allowBackdropClose = this._otp.closeMethods.includes('overlay');
   this._allowButtonClose = this._otp.closeMethods.includes('button');
   this._allowEscapeClose = this._otp.closeMethods.includes('escape');
